@@ -1,0 +1,143 @@
+/* Hero enhancement only; all content is visible before JavaScript initializes. */
+.hero,
+[data-hero-brand] {
+  --hero-brand-blur: 8px;
+  --hero-hover-lift: -2px;
+  --hero-press-scale: 0.97;
+  --hero-social-scale: 1.08;
+  --hero-social-rotation: 4deg;
+  --hero-hover-duration: 300ms;
+  --hero-fill-duration: 350ms;
+  --hero-press-duration: 100ms;
+  --hero-hover-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --hero-button-glow: 0 var(--s2) var(--s8)
+    color-mix(in srgb, var(--gold-500) 28%, transparent);
+}
+html.js .hero[data-hero-motion='ready'] [data-hero-enter],
+html.js [data-hero-brand='ready'] {
+  opacity: 0;
+}
+body:has(.hero) .site-header .brand {
+  position: relative;
+}
+.hero-brand-soft {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: inherit;
+  flex-direction: inherit;
+  gap: inherit;
+  filter: blur(var(--hero-brand-blur));
+  pointer-events: none;
+  user-select: none;
+}
+.hero .button {
+  position: relative;
+  isolation: isolate;
+  transition: transform var(--hero-hover-duration) var(--hero-hover-ease);
+}
+.hero .button.primary:hover {
+  filter: none;
+}
+.hero .button::before,
+.hero .button.primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.hero .button.primary::before {
+  box-shadow: var(--hero-button-glow);
+  opacity: 0;
+  transition: opacity var(--hero-hover-duration) var(--hero-hover-ease);
+}
+.hero .button.primary::after {
+  background: var(--gold-100);
+  opacity: 0;
+  transition: opacity var(--hero-hover-duration) var(--hero-hover-ease);
+}
+.hero .button.secondary::before {
+  background: var(--grad-gold);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--hero-fill-duration) var(--hero-hover-ease);
+}
+.hero-button-label {
+  position: relative;
+  z-index: 1;
+  transition: opacity var(--hero-fill-duration) var(--hero-hover-ease);
+}
+.hero-button-label-filled {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: inherit;
+  color: var(--ink-950);
+  opacity: 0;
+}
+body:has(.hero) .site-header .social-icon {
+  --hero-press-scale: 0.97;
+  --hero-social-scale: 1.08;
+  --hero-social-rotation: 4deg;
+  --hero-hover-duration: 300ms;
+  --hero-press-duration: 100ms;
+  transition: transform var(--hero-hover-duration);
+}
+body:has(.hero) .site-header .social-icon svg {
+  transition: transform var(--hero-hover-duration);
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero .button:hover {
+    transform: translateY(var(--hero-hover-lift));
+  }
+  .hero .button.primary:hover::before {
+    opacity: 1;
+  }
+  .hero .button.primary:hover::after {
+    opacity: 0.18;
+  }
+  .hero .button.secondary:hover::before {
+    transform: scaleY(1);
+  }
+  .hero
+    .button.secondary:hover
+    .hero-button-label:not(.hero-button-label-filled) {
+    opacity: 0;
+  }
+  .hero .button.secondary:hover .hero-button-label-filled {
+    opacity: 1;
+  }
+  body:has(.hero) .site-header .social-icon:hover svg {
+    transform: scale(var(--hero-social-scale))
+      rotate(var(--hero-social-rotation));
+  }
+}
+.hero .button:active,
+body:has(.hero) .site-header .social-icon:active {
+  transform: scale(var(--hero-press-scale));
+  transition-duration: var(--hero-press-duration);
+}
+@media (hover: none), (pointer: coarse) {
+  body:has(.hero) .site-header .social-icon:hover {
+    background: transparent;
+    border-color: var(--line-on-ink);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .hero[data-hero-motion='ready'] [data-hero-enter],
+  html.js [data-hero-brand='ready'] {
+    opacity: 1;
+  }
+  .hero-brand-soft {
+    display: none;
+  }
+  .hero .button,
+  body:has(.hero) .site-header .social-icon,
+  body:has(.hero) .site-header .social-icon svg {
+    transform: none !important;
+  }
+}
